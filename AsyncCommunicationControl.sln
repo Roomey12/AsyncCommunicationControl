@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyInfrastructure", "MyInfra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyConsumer", "MyConsumer\MyConsumer.csproj", "{47543312-21CF-4C23-98FB-8C7BF0C9E595}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyRetrySystem", "MyRetrySystem\MyRetrySystem.csproj", "{7E814E94-E263-4208-ACC9-300A38B5B8CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{47543312-21CF-4C23-98FB-8C7BF0C9E595}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47543312-21CF-4C23-98FB-8C7BF0C9E595}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47543312-21CF-4C23-98FB-8C7BF0C9E595}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E814E94-E263-4208-ACC9-300A38B5B8CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E814E94-E263-4208-ACC9-300A38B5B8CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E814E94-E263-4208-ACC9-300A38B5B8CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E814E94-E263-4208-ACC9-300A38B5B8CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

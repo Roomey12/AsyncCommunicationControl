@@ -12,4 +12,23 @@ public class MessagesContext<T> : DbContext where T : Message
     }
     
     public DbSet<T> Messages { get; set; }
+    
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        foreach (var entry in ChangeTracker.Entries<Message>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    entry.Entity.CreatedOn = DateTime.UtcNow;
+                    break;
+
+                case EntityState.Modified:
+                    entry.Entity.ModifiedOn = DateTime.UtcNow;
+                    break;
+            }
+        }
+
+        return await base.SaveChangesAsync(cancellationToken);
+    }
 }

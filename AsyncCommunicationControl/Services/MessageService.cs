@@ -1,7 +1,7 @@
-﻿using System.Text.Json;
-using AsyncCommunicationControl.Data;
+﻿using AsyncCommunicationControl.Data;
 using AsyncCommunicationControl.Entities;
 using AsyncCommunicationControl.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AsyncCommunicationControl.Services;
 
@@ -14,6 +14,13 @@ public class MessageService<TCustomMessage> : IMessageService<TCustomMessage> wh
         _messagesContext = messagesContext;
     }
 
+    public IQueryable<TCustomMessage> GetMessagesByStatusAndQueue(ExecutionStatus status, string queue)
+    {
+        return _messagesContext.Messages.Where(message =>
+            message.Status == status && 
+            message.Queue.Equals(queue, StringComparison.OrdinalIgnoreCase));
+    }
+    
     public async Task<int> UpdateMessageAsync(TCustomMessage message)
     {
         _messagesContext.Update(message);
@@ -26,10 +33,10 @@ public class MessageService<TCustomMessage> : IMessageService<TCustomMessage> wh
         return await _messagesContext.SaveChangesAsync();
     }
 
-    public async Task<TCustomMessage> CreateAndSubmitMessageAsync<TMessageContent>(TMessageContent content, ExecutionStatus status = ExecutionStatus.ToBeExecuted)
+    public async Task<TCustomMessage> CreateAndSubmitMessageAsync<TMessageContent>(TMessageContent content, string queue, ExecutionStatus status = ExecutionStatus.ToBeExecuted)
     {
         var message = new TCustomMessage();
-        message.Fill(content, status);
+        message.Fill(content, queue, status);
         await SubmitMessageAsync(message);
         return message;
     }
