@@ -7,19 +7,15 @@ namespace AsyncCommunicationControl.Entities;
 public class Message
 {
     public int Id { get; set; }
-    public string StringContent { get; set; }
+    public string Content { get; set; }
     public ExecutionStatus Status { get; set; }
     public DateTime CreatedOn { get; set; }
     public DateTime ModifiedOn { get; set; }
-    
-    [NotMapped]
-    public object MessageContent { get; set; }
 
     public Message(object content, ExecutionStatus status = ExecutionStatus.ToBeExecuted)
         : this()
     {
-        StringContent = JsonSerializer.Serialize(content);
-        MessageContent = content;
+        Content = JsonSerializer.Serialize(content);
         Status = status;
     }
 
@@ -30,9 +26,9 @@ public class Message
         ModifiedOn = utcNow;
     }
 
-    public void Fill<T>(T stringContent, ExecutionStatus status = ExecutionStatus.ToBeExecuted)
+    public void Fill(object content, ExecutionStatus status = ExecutionStatus.ToBeExecuted)
     {
-        StringContent = JsonSerializer.Serialize(stringContent);
+        Content = JsonSerializer.Serialize(content);
         Status = status;
     }
 }

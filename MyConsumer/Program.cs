@@ -1,10 +1,11 @@
 ﻿using System.Text.Json;
 using MyDomain;
+using MyInfrastructure;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
 Console.WriteLine("sas");
-var factory = new ConnectionFactory() { HostName = "localhost" };
+var factory = new ConnectionFactory { HostName = "localhost" };
 using var connection = factory.CreateConnection();
 using var channel = connection.CreateModel();
 channel.QueueDeclare("products", exclusive: false, autoDelete: false);
@@ -15,11 +16,14 @@ consumer.Received += (model, eventArgs) =>
     try
     {
         var body = eventArgs.Body.ToArray();
-        var product = JsonSerializer.Deserialize<Product>(body);
+        var message = JsonSerializer.Deserialize<MyMessage>(body);
+        var product = JsonSerializer.Deserialize<Product>(message.Content);
         Console.WriteLine($"Product: {product.Name}|{product.Price}");
+        
     }
     catch(Exception ex)
     {
+        Console.WriteLine(ex.Message);
         //Logger
         //channel.BasicNack(eventArgs.DeliveryTag, false, true);
     }

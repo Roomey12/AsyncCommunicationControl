@@ -7,5 +7,7 @@ public interface IMessageService<TCustomMessage> where TCustomMessage : Message,
 {
     Task<int> SubmitMessageAsync(TCustomMessage message);
 
+    Task<int> SetStatus(TCustomMessage message, ExecutionStatus status);
+
     Task<TCustomMessage> CreateAndSubmitMessageAsync<TMessageContent>(TMessageContent content, ExecutionStatus status = ExecutionStatus.ToBeExecuted);
 }

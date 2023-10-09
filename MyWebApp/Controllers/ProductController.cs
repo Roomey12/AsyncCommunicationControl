@@ -20,7 +20,8 @@ public class ProductController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateProduct(Product product)
     {
-        await _asyncCommunicationProducer.SendAndSubmitMessage(product, ProductsQueue);
+        var message = new MyMessage("fromProductController");
+        await _asyncCommunicationProducer.SendAndSubmitCustomMessage(product, message, ProductsQueue);
         return Ok();
     }
 }

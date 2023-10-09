@@ -14,6 +14,13 @@ public class MessageService<TCustomMessage> : IMessageService<TCustomMessage> wh
         _messagesContext = messagesContext;
     }
 
+    public async Task<int> SetStatus(TCustomMessage message, ExecutionStatus status)
+    {
+        message.Status = status;
+        _messagesContext.Update(message);
+        return await _messagesContext.SaveChangesAsync();
+    }
+    
     public async Task<int> SubmitMessageAsync(TCustomMessage message)
     {
         _messagesContext.Add(message);
@@ -22,7 +29,8 @@ public class MessageService<TCustomMessage> : IMessageService<TCustomMessage> wh
     
     public async Task<TCustomMessage> CreateAndSubmitMessageAsync<TMessageContent>(TMessageContent content, ExecutionStatus status = ExecutionStatus.ToBeExecuted)
     {
-        var message = (TCustomMessage) new Message(content, status);
+        var message = new TCustomMessage();
+        message.Fill(content, status);
         await SubmitMessageAsync(message);
         return message;
     }
