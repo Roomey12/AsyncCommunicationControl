@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-MyRetrySystem-27DB365A-7260-420D-849E-311B1B3EBB7B</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AsyncCommunicationControl\AsyncCommunicationControl.csproj" />
+      <ProjectReference Include="..\MyInfrastructure\MyInfrastructure.csproj" />
+    </ItemGroup>
+</Project>
