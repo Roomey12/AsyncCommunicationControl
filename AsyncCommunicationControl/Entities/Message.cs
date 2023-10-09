@@ -4,21 +4,22 @@ using AsyncCommunicationControl.Models;
 
 namespace AsyncCommunicationControl.Entities;
 
-public class Message//<T>
+public class Message
 {
     public int Id { get; set; }
-    public string Content { get; set; }
+    public string StringContent { get; set; }
     public ExecutionStatus Status { get; set; }
     public DateTime CreatedOn { get; set; }
     public DateTime ModifiedOn { get; set; }
     
-    //[NotMapped]
-    //public T Sas { get; set; }
+    [NotMapped]
+    public object MessageContent { get; set; }
 
-    public Message(string content, ExecutionStatus status)
+    public Message(object content, ExecutionStatus status = ExecutionStatus.ToBeExecuted)
         : this()
     {
-        Content = content;
+        StringContent = JsonSerializer.Serialize(content);
+        MessageContent = content;
         Status = status;
     }
 
@@ -29,9 +30,9 @@ public class Message//<T>
         ModifiedOn = utcNow;
     }
 
-    public void Fill<T>(T content, ExecutionStatus status = ExecutionStatus.ToBeExecuted)
+    public void Fill<T>(T stringContent, ExecutionStatus status = ExecutionStatus.ToBeExecuted)
     {
-        Content = JsonSerializer.Serialize(content);
+        StringContent = JsonSerializer.Serialize(stringContent);
         Status = status;
     }
 }

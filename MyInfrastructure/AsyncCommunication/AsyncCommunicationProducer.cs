@@ -14,18 +14,16 @@ public class AsyncCommunicationProducer : IAsyncCommunicationProducer
         _messageService = messageService;
     }
     
-    public async Task<int> SendAndSubmitMessage<T>(T sendMessage, string queue)
+    public async Task SendAndSubmitMessage<TMessageContent>(TMessageContent messageContent, string queue)
     {
-        var submitMessageResult = await _messageService.SubmitAndCreateMessageAsync(sendMessage);
-        _messageProducer.SendMessage(sendMessage, queue);
-        return submitMessageResult;
+        var message = await _messageService.CreateAndSubmitMessageAsync(messageContent);
+        _messageProducer.SendMessage(message, queue);
     }
     
-    public async Task<int> SendAndSubmitCustomMessage<T>(T sendMessage, MyMessage submitMessage, string queue) 
+    public async Task SendAndSubmitCustomMessage<TMessageContent>(TMessageContent messageContent, MyMessage customMessage, string queue) 
     {
-        submitMessage.Fill(sendMessage);
-        var submitMessageResult = await _messageService.SubmitMessageAsync(submitMessage);
-        _messageProducer.SendMessage(sendMessage, queue);
-        return submitMessageResult;
+        customMessage.Fill(messageContent);
+        await _messageService.SubmitMessageAsync(customMessage);
+        _messageProducer.SendMessage(customMessage, queue);
     }
 }

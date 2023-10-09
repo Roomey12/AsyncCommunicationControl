@@ -7,7 +7,7 @@ public class MyMessage : Message
 {
     public string? Description { get; set; }
 
-    public MyMessage(string content, string description, ExecutionStatus status) 
+    public MyMessage(string content, string description, ExecutionStatus status = ExecutionStatus.ToBeExecuted) 
         : base(content, status)
     {
         Description = description;

@@ -3,9 +3,9 @@ using AsyncCommunicationControl.Models;
 
 namespace AsyncCommunicationControl.Services;
 
-public interface IMessageService<T> where T : Message, new()
+public interface IMessageService<TCustomMessage> where TCustomMessage : Message, new()
 {
-    Task<int> SubmitMessageAsync(Message message);
+    Task<int> SubmitMessageAsync(TCustomMessage message);
 
-    Task<int> SubmitAndCreateMessageAsync<T1>(T1 content, ExecutionStatus status = ExecutionStatus.ToBeExecuted);
+    Task<TCustomMessage> CreateAndSubmitMessageAsync<TMessageContent>(TMessageContent content, ExecutionStatus status = ExecutionStatus.ToBeExecuted);
 }

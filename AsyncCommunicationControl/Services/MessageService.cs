@@ -5,30 +5,25 @@ using AsyncCommunicationControl.Models;
 
 namespace AsyncCommunicationControl.Services;
 
-public class MessageService<T> : IMessageService<T> where T : Message, new()
+public class MessageService<TCustomMessage> : IMessageService<TCustomMessage> where TCustomMessage : Message, new()
 {
-    private readonly MessagesContext<T> _messagesContext;
+    private readonly MessagesContext<TCustomMessage> _messagesContext;
 
-    public MessageService(MessagesContext<T> messagesContext)
+    public MessageService(MessagesContext<TCustomMessage> messagesContext)
     {
         _messagesContext = messagesContext;
     }
 
-    public async Task<int> SubmitMessageAsync(Message message)
+    public async Task<int> SubmitMessageAsync(TCustomMessage message)
     {
         _messagesContext.Add(message);
         return await _messagesContext.SaveChangesAsync();
     }
     
-    public async Task<int> SubmitAndCreateMessageAsync<T1>(T1 content, ExecutionStatus status = ExecutionStatus.ToBeExecuted)
+    public async Task<TCustomMessage> CreateAndSubmitMessageAsync<TMessageContent>(TMessageContent content, ExecutionStatus status = ExecutionStatus.ToBeExecuted)
     {
-        var jsonContent = JsonSerializer.Serialize(content);
-        var message = new T
-        {
-            Content = jsonContent,
-            Status = status
-        };
-
-        return await SubmitMessageAsync(message);
+        var message = (TCustomMessage) new Message(content, status);
+        await SubmitMessageAsync(message);
+        return message;
     }
 }

@@ -2,7 +2,7 @@
 
 public interface IAsyncCommunicationProducer
 {
-    Task<int> SendAndSubmitMessage<T>(T sendMessage, string queue);
+    Task SendAndSubmitMessage<TMessageContent>(TMessageContent sendMessage, string queue);
 
-    Task<int> SendAndSubmitCustomMessage<T>(T sendMessage, MyMessage submitMessage, string queue);
+    Task SendAndSubmitCustomMessage<TMessageContent>(TMessageContent sendMessage, MyMessage submitMessage, string queue);
 }
