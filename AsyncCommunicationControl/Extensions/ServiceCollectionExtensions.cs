@@ -9,7 +9,9 @@ namespace AsyncCommunicationControl.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddAsyncCommunicationControl<TCustomMessage>(this IServiceCollection serviceCollection, string connectionString, string migrationAssembly) 
+    public static IServiceCollection AddAsyncCommunicationControl<TCustomMessage>(this IServiceCollection serviceCollection,
+                                                                                  string connectionString, 
+                                                                                  string migrationAssembly) 
         where TCustomMessage : Message, new()
     {
         ArgumentException.ThrowIfNullOrEmpty(connectionString);
@@ -23,7 +25,7 @@ public static class ServiceCollectionExtensions
         });
 
         serviceCollection.AddScoped<IMessageService<TCustomMessage>, MessageService<TCustomMessage>>();
-        serviceCollection.AddScoped<IRetryService<TCustomMessage>>();
+        serviceCollection.AddScoped<IRetryService<TCustomMessage>, RetryService<TCustomMessage>>();
         return serviceCollection;
     }
 }

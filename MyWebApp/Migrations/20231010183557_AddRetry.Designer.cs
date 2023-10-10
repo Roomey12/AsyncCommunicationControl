@@ -3,6 +3,7 @@ using System;
 using AsyncCommunicationControl.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyInfrastructure.Models;
 
@@ -11,9 +12,11 @@ using MyInfrastructure.Models;
 namespace MyWebApp.Migrations
 {
     [DbContext(typeof(MessagesContext<MyMessage>))]
-    partial class MessagesContextModelSnapshot : ModelSnapshot
+    [Migration("20231010183557_AddRetry")]
+    partial class AddRetry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
