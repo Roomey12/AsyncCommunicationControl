@@ -1,6 +1,6 @@
 ﻿using AsyncCommunicationControl.Entities;
 
-namespace MyInfrastructure;
+namespace MyInfrastructure.Models;
 
 public class MyMessage : Message
 {

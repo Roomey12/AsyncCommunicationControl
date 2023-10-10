@@ -1,5 +1,6 @@
 ﻿using MyDomain;
 using MyInfrastructure;
+using MyInfrastructure.Models;
 
 namespace MyConsumer;
 

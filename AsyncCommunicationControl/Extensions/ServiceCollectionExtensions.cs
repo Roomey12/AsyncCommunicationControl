@@ -9,18 +9,21 @@ namespace AsyncCommunicationControl.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddAsyncCommunicationControl<T>(this IServiceCollection serviceCollection, string connectionString) 
-        where T : Message, new()
+    public static IServiceCollection AddAsyncCommunicationControl<TCustomMessage>(this IServiceCollection serviceCollection, string connectionString, string migrationAssembly) 
+        where TCustomMessage : Message, new()
     {
-        serviceCollection.AddDbContext<MessagesContext<T>>(options =>
+        ArgumentException.ThrowIfNullOrEmpty(connectionString);
+        ArgumentException.ThrowIfNullOrEmpty(migrationAssembly);
+
+        serviceCollection.AddDbContext<MessagesContext<TCustomMessage>>(options =>
         {
-            options.UseMySql("Server=localhost;Database=AsyncCommunicationControl;User=root;Password=qwer1234;Port=3306;",
+            options.UseMySql(connectionString,
                 new MySqlServerVersion(new Version(8, 0, 27)),
-                b => b.MigrationsAssembly("MyWebApp"));
+                b => b.MigrationsAssembly(migrationAssembly));
         });
 
-        serviceCollection.AddScoped<IMessageService<T>, MessageService<T>>();
-        
+        serviceCollection.AddScoped<IMessageService<TCustomMessage>, MessageService<TCustomMessage>>();
+        serviceCollection.AddScoped<IRetryService<TCustomMessage>>();
         return serviceCollection;
     }
 }

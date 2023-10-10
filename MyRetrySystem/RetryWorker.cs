@@ -1,22 +1,19 @@
-using AsyncCommunicationControl;
 using AsyncCommunicationControl.Helpers;
 using AsyncCommunicationControl.Models;
-using AsyncCommunicationControl.Services;
 using AsyncCommunicationControl.Services.Interfaces;
-using MyInfrastructure;
-using Microsoft.EntityFrameworkCore;
 using MyInfrastructure.AsyncCommunication;
+using MyInfrastructure.Models;
 
 namespace MyRetrySystem;
 
-public class Worker : BackgroundService
+public class RetryWorker : BackgroundService
 {
-    private readonly ILogger<Worker> _logger;
+    private readonly ILogger<RetryWorker> _logger;
     private readonly IRetryService<MyMessage> _retryService;
     private readonly IAsyncCommunicationProducer _asyncCommunicationProducer;
     private readonly IEnumerable<RetryPolicy> _retryPolicies;
 
-    public Worker(ILogger<Worker> logger, IRetryService<MyMessage> retryService, IAsyncCommunicationProducer asyncCommunicationProducer)
+    public RetryWorker(ILogger<RetryWorker> logger, IRetryService<MyMessage> retryService, IAsyncCommunicationProducer asyncCommunicationProducer)
     {
         _logger = logger;
         _retryService = retryService;

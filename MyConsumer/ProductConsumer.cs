@@ -2,6 +2,7 @@
 using AsyncCommunicationControl.Services.Interfaces;
 using MyDomain;
 using MyInfrastructure;
+using MyInfrastructure.Models;
 
 namespace MyConsumer;
 

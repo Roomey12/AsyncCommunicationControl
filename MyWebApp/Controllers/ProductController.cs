@@ -2,6 +2,7 @@
 using MyDomain;
 using MyInfrastructure;
 using MyInfrastructure.AsyncCommunication;
+using MyInfrastructure.Models;
 
 namespace MyWebApp.Controllers;
 

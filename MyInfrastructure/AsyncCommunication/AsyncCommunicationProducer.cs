@@ -1,5 +1,6 @@
 ﻿using AsyncCommunicationControl.Services;
 using AsyncCommunicationControl.Services.Interfaces;
+using MyInfrastructure.Models;
 using MyInfrastructure.RabbitMQ;
 
 namespace MyInfrastructure.AsyncCommunication;

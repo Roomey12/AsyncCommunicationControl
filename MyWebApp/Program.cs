@@ -1,7 +1,6 @@
 using AsyncCommunicationControl.Extensions;
-using MyInfrastructure;
-using MyInfrastructure.AsyncCommunication;
-using MyInfrastructure.RabbitMQ;
+using MyInfrastructure.Extensions;
+using MyInfrastructure.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +11,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAsyncCommunicationControl<MyMessage>("cs");
-builder.Services.AddScoped<IMessageProducer, RabbitMQProducer>();
-builder.Services.AddScoped<IAsyncCommunicationProducer, AsyncCommunicationProducer>();
-
+builder.Services.AddAsyncCommunicationControl<MyMessage>(
+    builder.Configuration["Messages:ConnectionString"],
+    builder.Configuration["Messages:MigrationAssembly"]);
+builder.Services.AddRabbitMQ();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

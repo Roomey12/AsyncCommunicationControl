@@ -1,9 +1,9 @@
 ﻿using System.Text.Json;
 using AsyncCommunicationControl.Extensions;
-using AsyncCommunicationControl.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyDomain;
-using MyInfrastructure;
+using MyInfrastructure.Models;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -13,10 +13,18 @@ class Program
 {
     static void Main()
     {
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: true)
+            .AddEnvironmentVariables()
+            .Build();
+        
         var serviceProvider = new ServiceCollection()
             .AddScoped<IProductConsumer, ProductConsumer>()
-            .AddAsyncCommunicationControl<MyMessage>("cs")
+            .AddAsyncCommunicationControl<MyMessage>(
+                configuration["Messages:ConnectionString"],
+                configuration["Messages:MigrationAssembly"])
             .BuildServiceProvider();
+        
         Run(serviceProvider);
     }
 

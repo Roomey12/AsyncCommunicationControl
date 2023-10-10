@@ -1,4 +1,6 @@
-﻿namespace MyInfrastructure.AsyncCommunication;
+﻿using MyInfrastructure.Models;
+
+namespace MyInfrastructure.AsyncCommunication;
 
 public interface IAsyncCommunicationProducer
 {
