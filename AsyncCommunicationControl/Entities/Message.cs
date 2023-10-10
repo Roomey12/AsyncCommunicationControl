@@ -11,6 +11,9 @@ public class Message
     public DateTime CreatedOn { get; set; }
     public DateTime ModifiedOn { get; set; }
     public string Queue { get; set; }
+    public DateTime ExecuteAt { get; set; }
+    public int MaxRetryAttempts { get; set; }
+    public int TotalRetryAttempts { get; set; }
 
     public void Fill(object content, string queue, ExecutionStatus status = ExecutionStatus.ToBeExecuted)
     {

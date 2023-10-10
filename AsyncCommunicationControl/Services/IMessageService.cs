@@ -10,5 +10,4 @@ public interface IMessageService<TCustomMessage> where TCustomMessage : Message,
     Task<int> UpdateMessageAsync(TCustomMessage message);
 
     Task<TCustomMessage> CreateAndSubmitMessageAsync<TMessageContent>(TMessageContent content, string queue, ExecutionStatus status = ExecutionStatus.ToBeExecuted);
-    IQueryable<TCustomMessage> GetMessagesByStatusAndQueue(ExecutionStatus status, string queue);
 }

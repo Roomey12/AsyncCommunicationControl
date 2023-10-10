@@ -1,19 +1,23 @@
+using AsyncCommunicationControl;
 using AsyncCommunicationControl.Models;
 using AsyncCommunicationControl.Services;
 using MyInfrastructure;
 using Microsoft.EntityFrameworkCore;
+using MyInfrastructure.AsyncCommunication;
 
 namespace MyRetrySystem;
 
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
-    private readonly IMessageService<MyMessage> _messageService;
+    private readonly IRetryService<MyMessage> _retryService;
+    private readonly IAsyncCommunicationProducer _asyncCommunicationProducer;
 
-    public Worker(ILogger<Worker> logger, IMessageService<MyMessage> messageService)
+    public Worker(ILogger<Worker> logger, IRetryService<MyMessage> retryService, IAsyncCommunicationProducer asyncCommunicationProducer)
     {
         _logger = logger;
-        _messageService = messageService;
+        _retryService = retryService;
+        _asyncCommunicationProducer = asyncCommunicationProducer;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -21,14 +25,18 @@ public class Worker : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-            await Task.Delay(1000, stoppingToken);
+            await Task.Delay(10000, stoppingToken);
         }
     }
 
-    public async Task ExecuteAsync(ExecutionStatus executionStatus, string queue)
+    // проблема что на каждую очередь нужен свой ретрай
+    public async Task ExecuteAsync(RetryPolicy retryPolicy)
     {
-        var retryMessages = await _messageService.GetMessagesByStatusAndQueue(executionStatus, queue).ToListAsync();
-        //взять консьюмера, получить условия - например где у месейджей статус ExecutedWithErrors и интервал
-        //
+        var retryMessages = await _retryService.GetRetryMessagesAsync(retryPolicy, retryPolicy.Queue).ToListAsync();
+        foreach (var retryMessage in retryMessages)
+        {
+            retryMessage.TotalRetryAttempts++;
+            await _asyncCommunicationProducer.SendAndSubmitMessageAsync(retryMessage, retryPolicy.Queue);
+        }
     }
 }

@@ -21,7 +21,7 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> CreateProduct(Product product)
     {
         var message = new MyMessage("fromProductController");
-        await _asyncCommunicationProducer.SendAndSubmitCustomMessage(product, message, ProductsQueue);
+        await _asyncCommunicationProducer.SendAndSubmitCustomMessageAsync(product, message, ProductsQueue);
         return Ok();
     }
 }

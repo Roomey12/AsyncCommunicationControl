@@ -1,7 +1,6 @@
 ﻿using AsyncCommunicationControl.Data;
 using AsyncCommunicationControl.Entities;
 using AsyncCommunicationControl.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace AsyncCommunicationControl.Services;
 
@@ -14,19 +13,12 @@ public class MessageService<TCustomMessage> : IMessageService<TCustomMessage> wh
         _messagesContext = messagesContext;
     }
 
-    public IQueryable<TCustomMessage> GetMessagesByStatusAndQueue(ExecutionStatus status, string queue)
-    {
-        return _messagesContext.Messages.Where(message =>
-            message.Status == status && 
-            message.Queue.Equals(queue, StringComparison.OrdinalIgnoreCase));
-    }
-    
     public async Task<int> UpdateMessageAsync(TCustomMessage message)
     {
         _messagesContext.Update(message);
         return await _messagesContext.SaveChangesAsync();
     }
-    
+
     public async Task<int> SubmitMessageAsync(TCustomMessage message)
     {
         _messagesContext.Add(message);

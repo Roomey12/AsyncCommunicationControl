@@ -5,5 +5,5 @@ public enum ExecutionStatus
     ToBeExecuted,
     SuccessfullyExecuted,
     ExecutedWithErrors,
-    NotExecuted
+    ExecutedWithWarnings
 }
