@@ -1,6 +1,7 @@
 ﻿using AsyncCommunicationControl.Data;
 using AsyncCommunicationControl.Entities;
 using AsyncCommunicationControl.Models;
+using AsyncCommunicationControl.Services.Interfaces;
 
 namespace AsyncCommunicationControl.Services;
 

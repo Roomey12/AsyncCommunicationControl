@@ -1,7 +1,7 @@
 ﻿using AsyncCommunicationControl.Entities;
 using AsyncCommunicationControl.Models;
 
-namespace AsyncCommunicationControl.Services;
+namespace AsyncCommunicationControl.Services.Interfaces;
 
 public interface IMessageService<TCustomMessage> where TCustomMessage : Message, new()
 {

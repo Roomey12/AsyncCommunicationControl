@@ -1,6 +1,8 @@
 using AsyncCommunicationControl;
+using AsyncCommunicationControl.Helpers;
 using AsyncCommunicationControl.Models;
 using AsyncCommunicationControl.Services;
+using AsyncCommunicationControl.Services.Interfaces;
 using MyInfrastructure;
 using Microsoft.EntityFrameworkCore;
 using MyInfrastructure.AsyncCommunication;
@@ -12,31 +14,47 @@ public class Worker : BackgroundService
     private readonly ILogger<Worker> _logger;
     private readonly IRetryService<MyMessage> _retryService;
     private readonly IAsyncCommunicationProducer _asyncCommunicationProducer;
+    private readonly IEnumerable<RetryPolicy> _retryPolicies;
 
     public Worker(ILogger<Worker> logger, IRetryService<MyMessage> retryService, IAsyncCommunicationProducer asyncCommunicationProducer)
     {
         _logger = logger;
         _retryService = retryService;
         _asyncCommunicationProducer = asyncCommunicationProducer;
+        _retryPolicies = InitRetryPolicies();
     }
 
+    private IEnumerable<RetryPolicy> InitRetryPolicies()
+    {
+        var retryPolicies = new List<RetryPolicy>();
+        var productRetryPolicy = new RetryPolicyBuilder()
+            .WithQueue("product")
+            .WithExecutionStatus(ExecutionStatus.ExecutedWithErrors)
+            .WithMaxRetryAttempts(3)
+            .WithRetryInterval(TimeSpan.FromMinutes(1))
+            .Build();
+        retryPolicies.Add(productRetryPolicy);
+        return retryPolicies;
+    }
+    
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+            await ExecuteRetryAsync(_retryPolicies);
             await Task.Delay(10000, stoppingToken);
         }
     }
 
-    // проблема что на каждую очередь нужен свой ретрай
-    public async Task ExecuteAsync(RetryPolicy retryPolicy)
+    private async Task ExecuteRetryAsync(IEnumerable<RetryPolicy> retryPolicies)
     {
-        var retryMessages = await _retryService.GetRetryMessagesAsync(retryPolicy, retryPolicy.Queue).ToListAsync();
+        var retryMessages = await _retryService.GetRetryMessagesAsync(retryPolicies);
         foreach (var retryMessage in retryMessages)
         {
             retryMessage.TotalRetryAttempts++;
-            await _asyncCommunicationProducer.SendAndSubmitMessageAsync(retryMessage, retryPolicy.Queue);
-        }
+            _logger.LogInformation("Sending retry message: {retryMessageId} at {time}", retryMessage.Id, DateTimeOffset.Now);
+            await _asyncCommunicationProducer.SendAndSubmitMessageAsync(retryMessage, retryMessage.Queue);
+        }   
     }
 }

@@ -1,6 +1,5 @@
-﻿using AsyncCommunicationControl;
-using AsyncCommunicationControl.Models;
-using AsyncCommunicationControl.Services;
+﻿using AsyncCommunicationControl.Models;
+using AsyncCommunicationControl.Services.Interfaces;
 using MyDomain;
 using MyInfrastructure;
 
@@ -9,15 +8,9 @@ namespace MyConsumer;
 public class ProductConsumer : IProductConsumer
 {
     private readonly IMessageService<MyMessage> _messageService;
-    private readonly RetryPolicy _retryPolicy;
     public ProductConsumer(IMessageService<MyMessage> messageService)
     {
         _messageService = messageService;
-        _retryPolicy = new RetryPolicyBuilder()
-            .WithExecutionStatus(ExecutionStatus.ExecutedWithErrors)
-            .WithMaxRetryAttempts(3)
-            .WithRetryInterval(TimeSpan.FromMinutes(1))
-            .Build();
     }
     
     public async Task ExecuteAsync(MyMessage message, Product product)

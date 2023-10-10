@@ -1,6 +1,7 @@
 ﻿using AsyncCommunicationControl.Data;
 using AsyncCommunicationControl.Entities;
 using AsyncCommunicationControl.Services;
+using AsyncCommunicationControl.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 

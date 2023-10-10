@@ -1,5 +1,8 @@
 ﻿using AsyncCommunicationControl.Data;
 using AsyncCommunicationControl.Entities;
+using AsyncCommunicationControl.Models;
+using AsyncCommunicationControl.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace AsyncCommunicationControl.Services;
 
@@ -11,18 +14,23 @@ public class RetryService<TCustomMessage> : IRetryService<TCustomMessage> where 
         _messagesContext = messagesContext;
     }
     
-    public async Task<int> SubmitRetryMessageAsync(TCustomMessage message, RetryPolicy retryPolicy)
+    public async Task<IEnumerable<TCustomMessage>> GetRetryMessagesAsync(IEnumerable<RetryPolicy> retryPolicies)
     {
-        message.ExecuteAt = DateTime.UtcNow.Add(retryPolicy.RetryInterval);
-        _messagesContext.Update(message);
-        return await _messagesContext.SaveChangesAsync();
+        return (await Task.WhenAll(retryPolicies.Select(async retryPolicy =>
+                {
+                    var retryMessages = await GetRetryMessagesAsync(retryPolicy).ToListAsync();
+                    retryMessages.ForEach(retryMessage => retryMessage.TotalRetryAttempts++);
+                    return retryMessages;
+                }))
+                .ConfigureAwait(false))
+            .SelectMany(retryMessages => retryMessages);
     }
     
-    public IQueryable<TCustomMessage> GetRetryMessagesAsync(RetryPolicy retryPolicy, string queue)
+    private IQueryable<TCustomMessage> GetRetryMessagesAsync(RetryPolicy retryPolicy)
     {
         return _messagesContext.Messages.Where(message =>
             retryPolicy.RetryStatuses.Contains(message.Status) && 
-            message.Queue.Equals(queue, StringComparison.OrdinalIgnoreCase) &&
+            message.Queue.Equals(retryPolicy.Queue, StringComparison.OrdinalIgnoreCase) &&
             message.ExecuteAt <= DateTime.UtcNow &&
             message.TotalRetryAttempts < message.MaxRetryAttempts);
     }
