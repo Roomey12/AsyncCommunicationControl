@@ -1,8 +1,8 @@
 ﻿using MyDomain;
-using MyInfrastructure;
+using MyDomain.Models;
 using MyInfrastructure.Models;
 
-namespace MyConsumer;
+namespace MyConsumer.Consumer;
 
 public interface IProductConsumer
 {

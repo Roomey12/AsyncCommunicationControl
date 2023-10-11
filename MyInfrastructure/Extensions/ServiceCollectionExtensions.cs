@@ -8,8 +8,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddRabbitMQ(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<IMessageProducer, RabbitMQProducer>();
-        serviceCollection.AddScoped<IAsyncCommunicationProducer, AsyncCommunicationProducer>();
+        serviceCollection.AddSingleton<IMessageProducer, RabbitMQProducer>();
+        serviceCollection.AddSingleton<IAsyncCommunicationProducer, AsyncCommunicationProducer>();
         return serviceCollection;
     }
 }

@@ -2,7 +2,8 @@
 using AsyncCommunicationControl.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MyDomain;
+using MyConsumer.Consumer;
+using MyDomain.Models;
 using MyInfrastructure.Models;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;

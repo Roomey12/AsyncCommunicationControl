@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyDomain;
+using MyDomain.Models;
 using MyInfrastructure;
 using MyInfrastructure.AsyncCommunication;
 using MyInfrastructure.Models;

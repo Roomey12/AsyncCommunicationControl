@@ -9,9 +9,9 @@ public class Message
     public string Content { get; set; }
     public ExecutionStatus Status { get; set; }
     public DateTime CreatedOn { get; set; }
-    public DateTime ModifiedOn { get; set; }
+    public DateTime? ModifiedOn { get; set; }
     public string Queue { get; set; }
-    public DateTime ExecuteAt { get; set; }
+    public DateTime? ExecuteAt { get; set; }
     public int MaxRetryAttempts { get; set; }
     public int TotalRetryAttempts { get; set; }
 

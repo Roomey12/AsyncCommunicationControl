@@ -19,7 +19,11 @@ public class RetryService<TCustomMessage> : IRetryService<TCustomMessage> where 
         return (await Task.WhenAll(retryPolicies.Select(async retryPolicy =>
                 {
                     var retryMessages = await GetRetryMessagesAsync(retryPolicy).ToListAsync();
-                    retryMessages.ForEach(retryMessage => retryMessage.TotalRetryAttempts++);
+                    retryMessages.ForEach(retryMessage =>
+                    {
+                        retryMessage.TotalRetryAttempts++;
+                        retryMessage.Status = ExecutionStatus.InRetryQueue;
+                    });
                     return retryMessages;
                 }))
                 .ConfigureAwait(false))

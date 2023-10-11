@@ -1,4 +1,4 @@
-﻿namespace MyDomain;
+﻿namespace MyDomain.Models;
 
 public class Product
 {

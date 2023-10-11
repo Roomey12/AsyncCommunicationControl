@@ -14,8 +14,19 @@ public class MessageService<TCustomMessage> : IMessageService<TCustomMessage> wh
         _messagesContext = messagesContext;
     }
 
-    public async Task<int> UpdateMessageAsync(TCustomMessage message)
+    /// <summary>
+    /// Pass RetryPolicy if you want your message to be retried
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="retryPolicy"></param>
+    /// <returns></returns>
+    public async Task<int> UpdateMessageAsync(TCustomMessage message, RetryPolicy retryPolicy = null)
     {
+        if (retryPolicy != null)
+        {
+            message.ExecuteAt = DateTime.UtcNow.Add(retryPolicy.RetryInterval);
+            message.MaxRetryAttempts = retryPolicy.MaxRetryAttempts;
+        }
         _messagesContext.Update(message);
         return await _messagesContext.SaveChangesAsync();
     }

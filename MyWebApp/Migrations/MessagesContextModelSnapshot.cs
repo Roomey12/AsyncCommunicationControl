@@ -36,13 +36,13 @@ namespace MyWebApp.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("ExecuteAt")
+                    b.Property<DateTime?>("ExecuteAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("MaxRetryAttempts")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Queue")
