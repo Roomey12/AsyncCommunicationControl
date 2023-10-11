@@ -1,6 +1,7 @@
 ﻿using AsyncCommunicationControl.Helpers;
 using AsyncCommunicationControl.Models;
 using AsyncCommunicationControl.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using MyDomain;
 using MyDomain.Models;
 using MyInfrastructure.Models;
@@ -9,20 +10,24 @@ namespace MyConsumer.Consumer;
 
 public class ProductConsumer : IProductConsumer
 {
+    private readonly IServiceProvider _serviceProvider;
+
     public static RetryPolicy RetryPolicy = new RetryPolicyBuilder()
         .WithQueue("products")
         .WithExecutionStatus(ExecutionStatus.ExecutedWithErrors)
         .WithMaxRetryAttempts(3)
         .WithRetryInterval(TimeSpan.FromSeconds(30))
         .Build();
-    private readonly IMessageService<MyMessage> _messageService;
-    public ProductConsumer(IMessageService<MyMessage> messageService)
+    //private readonly IMessageService<MyMessage> _messageService;
+    public ProductConsumer(IServiceProvider serviceProvider)
     {
-        _messageService = messageService;
+        _serviceProvider = serviceProvider;
     }
     
     public async Task ExecuteAsync(MyMessage message, Product product)
     {
+        using var scope = _serviceProvider.CreateScope();
+        var messageService = scope.ServiceProvider.GetRequiredService<IMessageService<MyMessage>>();
         try
         {
             Console.WriteLine($"Product: {product.Name}|{product.Price}");
@@ -31,14 +36,14 @@ public class ProductConsumer : IProductConsumer
                 throw new Exception("wrong price");
             }
             message.Status = ExecutionStatus.SuccessfullyExecuted;
-            await _messageService.UpdateMessageAsync(message);
+            await messageService.UpdateMessageAsync(message);
         }
         catch (Exception ex)
         {
             message.Status = ExecutionStatus.ExecutedWithErrors;
             try
             {
-                await _messageService.UpdateMessageAsync(message, RetryPolicy);
+                await messageService.UpdateMessageAsync(message, RetryPolicy);
             }
             catch (Exception ex1)
             {
